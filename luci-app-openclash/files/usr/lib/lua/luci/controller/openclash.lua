@@ -5,10 +5,12 @@ function index()
 		return
 	end
 
-	local page = entry({"admin", "services", "openclash"}, alias("admin", "services", "openclash", "client"), _("OpenClash"), 50)
+	local page
+	
+	page = entry({"admin", "services", "openclash"}, alias("admin", "services", "openclash", "client"), _("OpenClash"), 50)
 	page.dependent = true
 	page.acl_depends = { "luci-app-openclash" }
-	entry({"admin", "services", "openclash", "client"},form("openclash/client"),_("Overviews"), 20).leaf = true
+	entry({"admin", "services", "openclash", "client"},cbi("openclash/client"),_("Overviews"), 20).leaf = true
 	entry({"admin", "services", "openclash", "status"},call("action_status")).leaf=true
 	entry({"admin", "services", "openclash", "state"},call("action_state")).leaf=true
 	entry({"admin", "services", "openclash", "startlog"},call("action_start")).leaf=true
@@ -32,7 +34,7 @@ function index()
 	entry({"admin", "services", "openclash", "groups-config"},cbi("openclash/groups-config"), nil).leaf = true
 	entry({"admin", "services", "openclash", "proxy-provider-config"},cbi("openclash/proxy-provider-config"), nil).leaf = true
 	entry({"admin", "services", "openclash", "config"},form("openclash/config"),_("Config Manage"), 70).leaf = true
-	entry({"admin", "services", "openclash", "log"},form("openclash/log"),_("Server Logs"), 80).leaf = true
+	entry({"admin", "services", "openclash", "log"},cbi("openclash/log"),_("Server Logs"), 80).leaf = true
 
 end
 local fs = require "luci.openclash"
@@ -140,11 +142,11 @@ end
 end
 
 local function corelv()
-	local new = luci.sys.call(string.format("sh /usr/share/openclash/clash_version.sh"))
+	luci.sys.call("sh /usr/share/openclash/clash_version.sh")
 	local core_lv = luci.sys.exec("sed -n 1p /tmp/clash_last_version 2>/dev/null")
 	local core_tun_lv = luci.sys.exec("sed -n 2p /tmp/clash_last_version 2>/dev/null")
 	local core_game_lv = luci.sys.exec("sed -n 3p /tmp/clash_last_version 2>/dev/null")
-	return core_lv .. "," .. core_tun_lv .. "," .. core_game_lv .. "," .. new
+	return core_lv .. "," .. core_tun_lv .. "," .. core_game_lv
 end
 
 local function opcv()
